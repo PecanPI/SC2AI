@@ -1,6 +1,16 @@
 import sc2
 from sc2 import run_game, maps, Race, Difficulty
+from sc2.player import Bot, Computer
 
 
-import tensorflow as tf
-print("GPU Available: ", tf.test.is_gpu_available())
+class PecanPiBot(sc2.BotAI):
+    async def on_step(self, iteration):
+        if iteration == 0:
+            for worker in self.workers:
+                await self.do(worker.attack(self.enemy_start_locations[0]))
+
+
+run_game(maps.get("KingsCoveLE"), [
+    Bot(Race.Zerg, PecanPiBot()),
+    Computer(Race.Terran, Difficulty.Easy)
+], realtime=True)
